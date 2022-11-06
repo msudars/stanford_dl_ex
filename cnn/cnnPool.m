@@ -30,6 +30,21 @@ pooledFeatures = zeros(convolvedDim / poolDim, ...
 %   Use mean pooling here.
 
 %%% YOUR CODE HERE %%%
-
+q_tot = poolDim^2;
+avg_kern = ones(poolDim)/q_tot;
+% div_sample = floor(convolvedDim / poolDim);
+% current_image = zeros(size(convolvedDim,3),size(convolvedDim,3));
+for imageNum = 1:numImages
+  for filterNum = 1:numFilters
+%     Convolution of the current image with average kernel:
+    current_image = squeeze(convolvedFeatures(:,:,filterNum,imageNum));
+    Img_conv = conv2(current_image,avg_kern,'valid');
+%     Downsampling to get the correct
+    aux = downsample(Img_conv,poolDim);
+    aux1 = downsample(aux',poolDim);
+    aux1 = aux1';
+    pooledFeatures(:,:,filterNum,imageNum) = aux1;
+  end
+end
 end
 
